@@ -1,0 +1,20 @@
+version: '3'
+services:
+  lambda:
+    build: .
+    ports:
+      - "9001:9001"
+    volumes: 
+      - "./:/var/task:ro,delegated"
+      - $HOME/.aws/:/root/.aws/
+    environment:
+        DOCKER_LAMBDA_WATCH: 1
+        DOCKER_LAMBDA_STAY_OPEN: 1
+  api:
+    image: owenyoung/aws-lambda-api-gateway-local
+    ports:
+      - "3000:3000"
+    volumes:
+      - ".:/app"
+    environment:
+      LAMBDA_ENDPOINT: "http://lambda:9001"
